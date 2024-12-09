@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
-
+from data_quality import RecommendationAnalyzer 
 st.set_page_config(
     page_title="Business Analysis Tool", 
     layout="wide",
@@ -285,23 +285,84 @@ class BusinessAnalysisTool:
         elif avg_scalability >= 4: return "Limited Scalability"
         else: return "Poor Scalability"
 
-    def _generate_recommendations(self, scores):
+   def _generate_recommendations(self, scores):
         recommendations = []
         for category, score in scores.items():
             if score < 6:
-                recommendations.append(self._get_category_recommendation(category, score))
+                recommendations.append(self._get_category_recommendation(category, score, scores))
         return recommendations
 
-    def _get_category_recommendation(self, category, score):
-        recommendations = {
-            'marketing': "Focus on improving market positioning and customer acquisition efficiency",
-            'sales': "Optimize sales process and enhance pipeline management",
-            'product_delivery': "Streamline delivery process and improve quality controls",
-            'operational_efficiency': "Implement process automation and optimize resource allocation",
-            'financial_health': "Strengthen financial controls and improve cash management",
-            'people': "Invest in talent development and enhance organizational culture"
+   def _get_category_recommendation(self, category, score, data):
+    analyzer = RecommendationAnalyzer()
+    quality_score = analyzer.calculate_data_quality_score(data, category)
+    
+    recommendations = []
+    
+    if category == 'marketing':
+        # Market Share Based Recommendations
+        market_share = data.get('market_share', 0)
+        industry = data.get('industry', 'General')
+        benchmark = self._get_industry_benchmark(industry, 'market_share')
+        
+        if market_share < benchmark:
+            if data.get('brand_recognition', 0) < 50:
+                recommendations.append({
+                    'text': "Increase brand awareness through targeted digital marketing and PR campaigns",
+                    'priority': 'high'
+                })
+            if data.get('customer_acquisition_cost', 0) > self._get_industry_benchmark(industry, 'cac'):
+                recommendations.append({
+                    'text': "Optimize marketing channels to reduce customer acquisition costs",
+                    'priority': 'high'
+                })
+        
+        # ROAS Based Recommendations
+        roas = data.get('marketing_roi', 0)
+        if roas < self._get_industry_benchmark(industry, 'roas'):
+            recommendations.append({
+                'text': "Review and optimize marketing spend allocation across channels",
+                'priority': 'medium'
+            })
+    
+    # Format recommendations with confidence scores
+    formatted_recommendations = []
+    for rec in recommendations:
+        formatted_rec = analyzer.format_recommendation(
+            rec['text'], 
+            quality_score * (1.2 if rec['priority'] == 'high' else 1.0)
+        )
+        formatted_recommendations.append(formatted_rec)
+    
+    return formatted_recommendations
+
+def _get_industry_benchmark(self, industry, metric):
+    benchmarks = {
+        "B2B Software": {
+            "market_share": 15,
+            "cac": 400,
+            "roas": 2.5,
+            "retention_rate": 85
+        },
+        "B2C E-commerce": {
+            "market_share": 10,
+            "cac": 30,
+            "roas": 4.0,
+            "retention_rate": 65
+        },
+        "Professional Services": {
+            "market_share": 20,
+            "cac": 200,
+            "roas": 3.0,
+            "retention_rate": 80
+        },
+        "Manufacturing": {
+            "market_share": 25,
+            "cac": 600,
+            "roas": 2.0,
+            "retention_rate": 90
         }
-        return f"{category.replace('_', ' ').title()} ({score:.1f}/10): {recommendations[category]}"
+    }
+    return benchmarks.get(industry, {}).get(metric, 0)
 
     def _assess_risks(self, scores):
         risks = []
@@ -352,7 +413,76 @@ def create_risk_gauge(score):
         }
     ))
     return fig
-
+def get_missing_key_metrics(data, category):
+    key_metrics = {
+        'marketing': [
+            'market_share',
+            'customer_acquisition_cost',
+            'marketing_roi',
+            'brand_recognition'
+        ],
+        'sales': [
+            'revenue_growth',
+            'pipeline_conversion',
+            'average_deal_size'
+        ]
+        # Add other categories as needed
+    }
+    
+    return [metric for metric in key_metrics.get(category, [])
+            if metric not in data or data[metric] is None]
+def display_enhanced_recommendations(report, data):
+    st.header("Analysis & Recommendations")
+    
+    # Create tabs for different aspects of recommendations
+    tab1, tab2, tab3 = st.tabs(["Key Recommendations", "Data Quality", "Industry Benchmarks"])
+    
+    with tab1:
+        for category, recommendations in report['recommendations'].items():
+            st.subheader(f"{category.title()} Recommendations")
+            
+            for rec in recommendations:
+                col1, col2 = st.columns([4, 1])
+                with col1:
+                    st.markdown(f"{rec['indicator']} {rec['text']}")
+                with col2:
+                    st.markdown(f"**{rec['confidence_level']}**")
+                    
+                with st.expander("See Details"):
+                    st.write(f"Confidence Score: {rec['confidence_score']:.2f}")
+                    st.progress(rec['confidence_score'])
+    
+    with tab2:
+        st.subheader("Data Quality Analysis")
+        analyzer = RecommendationAnalyzer()
+        
+        for category in report['recommendations'].keys():
+            quality_score = analyzer.calculate_data_quality_score(data, category)
+            st.metric(
+                f"{category.title()} Data Quality",
+                f"{quality_score*100:.1f}%",
+                delta=None
+            )
+            
+            with st.expander("How to improve data quality"):
+                st.write("To improve confidence in recommendations:")
+                missing_metrics = get_missing_key_metrics(data, category)
+                for metric in missing_metrics:
+                    st.write(f"- Add data for: {metric}")
+    
+    with tab3:
+        st.subheader("Industry Benchmarks")
+        industry = data.get('industry', 'General')
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            st.metric("Industry Avg CAC", 
+                     f"${report.get('benchmarks', {}).get('cac', 0)}", 
+                     delta=f"{data.get('customer_acquisition_cost', 0) - report.get('benchmarks', {}).get('cac', 0):.0f}")
+        with col2:
+            st.metric("Industry Avg ROAS",
+                     f"{report.get('benchmarks', {}).get('roas', 0)}x",
+                     delta=f"{data.get('marketing_roi', 0) - report.get('benchmarks', {}).get('roas', 0):.1f}")
 def main():
     st.write("Debug: Application Starting")
     st.title("Business Viability & Scalability Analysis Tool")
@@ -427,42 +557,28 @@ def main():
         inputs.update(default_fields)
 
     with tab2:
-            if st.button("Generate Analysis"):
-                # Generate report
-                report = analyzer.generate_comprehensive_report(inputs)
+        if st.button("Generate Analysis"):
+            # Generate report
+            report = analyzer.generate_comprehensive_report(inputs)
 
-                # Display overall scores
-                col1, col2 = st.columns(2)
+            # Display overall scores
+            col1, col2 = st.columns(2)
 
-                with col1:
-                    st.subheader("Overall Performance")
-                    gauge_chart = create_risk_gauge(report['overall_score'])
-                    st.plotly_chart(gauge_chart)
+            with col1:
+                st.subheader("Overall Performance")
+                gauge_chart = create_risk_gauge(report['overall_score'])
+                st.plotly_chart(gauge_chart)
 
-                    st.metric("Viability Rating", report['viability_rating'])
-                    st.metric("Scalability Rating", report['scalability_rating'])
+                st.metric("Viability Rating", report['viability_rating'])
+                st.metric("Scalability Rating", report['scalability_rating'])
 
-                with col2:
-                    st.subheader("Category Performance")
-                    radar_chart = create_radar_chart(report['category_scores'])
-                    st.plotly_chart(radar_chart)
+            with col2:
+                st.subheader("Category Performance")
+                radar_chart = create_radar_chart(report['category_scores'])
+                st.plotly_chart(radar_chart)
 
-                # Display recommendations and risks
-                col3, col4 = st.columns(2)
+            # Display enhanced recommendations
+            display_enhanced_recommendations(report, inputs)
 
-                with col3:
-                    st.subheader("Recommendations")
-                    for rec in report['recommendations']:
-                        st.warning(rec)
-
-                with col4:
-                    st.subheader("Risk Assessment")
-                    for risk in report['risk_assessment']:
-                        if "High risk" in risk:
-                            st.error(risk)
-                        elif "Moderate risk" in risk:
-                            st.warning(risk)
-                        else:
-                            st.success(risk)
 if __name__ == "__main__":
     main()
