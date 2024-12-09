@@ -354,20 +354,8 @@ def create_risk_gauge(score):
     return fig
 
 def main():
-    page_title="Business Analysis Tool", 
-    layout="wide",
-    menu_items={
-        'Get Help': None,
-        'Report a bug': None,
-        'About': None
-    }
-)
     st.write("Debug: Application Starting")
     st.title("Business Viability & Scalability Analysis Tool")
-    st.markdown("""
-    This tool provides comprehensive analysis of business performance across six key dimensions.
-    Fill in the metrics below to generate your analysis.
-    """)
 
     analyzer = BusinessAnalysisTool()
 
