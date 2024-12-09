@@ -292,34 +292,34 @@ class BusinessAnalysisTool:
                 recommendations.append(self._get_category_recommendation(category, score, scores))
         return recommendations
 
-    def _get_category_recommendation(self, category, score, data):
+   def _get_category_recommendation(self, category, score, data):
         analyzer = RecommendationAnalyzer()
         quality_score = analyzer.calculate_data_quality_score(data, category)
     
         recommendations = []
     
-    if category == 'marketing':
-        # Market Share Based Recommendations
-        market_share = data.get('market_share', 0)
-        industry = data.get('industry', 'General')
-        benchmark = self._get_industry_benchmark(industry, 'market_share')
-        
-        if market_share < benchmark:
-            if data.get('brand_recognition', 0) < 50:
+        if category == 'marketing':
+            # Market Share Based Recommendations
+            market_share = data.get('market_share', 0)
+            industry = data.get('industry', 'General')
+            benchmark = self._get_industry_benchmark(industry, 'market_share')
+            
+            if market_share < benchmark:
+                if data.get('brand_recognition', 0) < 50:
+                    recommendations.append({
+                        'text': "Increase brand awareness through targeted digital marketing and PR campaigns",
+                        'priority': 'high'
+                    })
+                if data.get('customer_acquisition_cost', 0) > self._get_industry_benchmark(industry, 'cac'):
+                    recommendations.append({
+                        'text': "Optimize marketing channels to reduce customer acquisition costs",
+                        'priority': 'high'
+                    })
+            
+            # ROAS Based Recommendations
+            roas = data.get('marketing_roi', 0)
+            if roas < self._get_industry_benchmark(industry, 'roas'):
                 recommendations.append({
-                    'text': "Increase brand awareness through targeted digital marketing and PR campaigns",
-                    'priority': 'high'
-                })
-            if data.get('customer_acquisition_cost', 0) > self._get_industry_benchmark(industry, 'cac'):
-                recommendations.append({
-                    'text': "Optimize marketing channels to reduce customer acquisition costs",
-                    'priority': 'high'
-                })
-        
-        # ROAS Based Recommendations
-        roas = data.get('marketing_roi', 0)
-        if roas < self._get_industry_benchmark(industry, 'roas'):
-            recommendations.append({
                 'text': "Review and optimize marketing spend allocation across channels",
                 'priority': 'medium'
             })
@@ -335,7 +335,7 @@ class BusinessAnalysisTool:
     
     return formatted_recommendations
 
-      def _get_industry_benchmark(self, industry, metric):
+    def _get_industry_benchmark(self, industry, metric):
         benchmarks = {
             "B2B Software": {
                 "market_share": 15,
@@ -364,7 +364,7 @@ class BusinessAnalysisTool:
     }
     return benchmarks.get(industry, {}).get(metric, 0)
 
-def _assess_risks(self, scores):
+    def _assess_risks(self, scores):
         risks = []
         for category, score in scores.items():
             if score < 5:
