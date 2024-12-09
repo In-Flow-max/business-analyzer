@@ -354,7 +354,6 @@ def create_risk_gauge(score):
     return fig
 
 def main():
-    st.set_page_config(
     page_title="Business Analysis Tool", 
     layout="wide",
     menu_items={
