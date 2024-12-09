@@ -285,18 +285,18 @@ class BusinessAnalysisTool:
         elif avg_scalability >= 4: return "Limited Scalability"
         else: return "Poor Scalability"
 
-   def _generate_recommendations(self, scores):
+    def _generate_recommendations(self, scores):
         recommendations = []
         for category, score in scores.items():
             if score < 6:
                 recommendations.append(self._get_category_recommendation(category, score, scores))
         return recommendations
 
-   def _get_category_recommendation(self, category, score, data):
-    analyzer = RecommendationAnalyzer()
-    quality_score = analyzer.calculate_data_quality_score(data, category)
+    def _get_category_recommendation(self, category, score, data):
+        analyzer = RecommendationAnalyzer()
+        quality_score = analyzer.calculate_data_quality_score(data, category)
     
-    recommendations = []
+        recommendations = []
     
     if category == 'marketing':
         # Market Share Based Recommendations
@@ -335,14 +335,14 @@ class BusinessAnalysisTool:
     
     return formatted_recommendations
 
-def _get_industry_benchmark(self, industry, metric):
-    benchmarks = {
-        "B2B Software": {
-            "market_share": 15,
-            "cac": 400,
-            "roas": 2.5,
-            "retention_rate": 85
-        },
+      def _get_industry_benchmark(self, industry, metric):
+        benchmarks = {
+            "B2B Software": {
+                "market_share": 15,
+                "cac": 400,
+                "roas": 2.5,
+                "retention_rate": 85
+            },
         "B2C E-commerce": {
             "market_share": 10,
             "cac": 30,
@@ -364,7 +364,7 @@ def _get_industry_benchmark(self, industry, metric):
     }
     return benchmarks.get(industry, {}).get(metric, 0)
 
-    def _assess_risks(self, scores):
+def _assess_risks(self, scores):
         risks = []
         for category, score in scores.items():
             if score < 5:
@@ -372,7 +372,6 @@ def _get_industry_benchmark(self, industry, metric):
             elif score < 7:
                 risks.append(f"Moderate risk in {category.replace('_', ' ')}: Score {score:.1f}/10")
         return risks if risks else ["No significant risks identified"]
-
 def create_radar_chart(category_scores):
     categories = list(category_scores.keys())
     values = list(category_scores.values())
