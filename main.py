@@ -4,8 +4,13 @@ import plotly.graph_objects as go
 import plotly.express as px
 
 st.set_page_config(
-    page_title="Business Analysis Tool",
-    layout="wide"
+    page_title="Business Analysis Tool", 
+    layout="wide",
+    menu_items={
+        'Get Help': None,
+        'Report a bug': None,
+        'About': None
+    }
 )
 
 class BusinessAnalysisTool:
@@ -472,3 +477,5 @@ def main():
                             st.warning(risk)
                         else:
                             st.success(risk)
+if __name__ == "__main__":
+    main()
