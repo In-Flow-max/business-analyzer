@@ -292,7 +292,7 @@ class BusinessAnalysisTool:
                 recommendations.append(self._get_category_recommendation(category, score, scores))
         return recommendations
 
-    def _get_category_recommendation(self, category, score, data):
+def _get_category_recommendation(self, category, score, data):
         analyzer = RecommendationAnalyzer()
         quality_score = analyzer.calculate_data_quality_score(data, category)
     
@@ -320,20 +320,20 @@ class BusinessAnalysisTool:
             roas = data.get('marketing_roi', 0)
             if roas < self._get_industry_benchmark(industry, 'roas'):
                 recommendations.append({
-                'text': "Review and optimize marketing spend allocation across channels",
-                'priority': 'medium'
-            })
+                    'text': "Review and optimize marketing spend allocation across channels",
+                    'priority': 'medium'
+                })
     
-    # Format recommendations with confidence scores
-    formatted_recommendations = []
-    for rec in recommendations:
-        formatted_rec = analyzer.format_recommendation(
-            rec['text'], 
-            quality_score * (1.2 if rec['priority'] == 'high' else 1.0)
-        )
-        formatted_recommendations.append(formatted_rec)
+        # Format recommendations with confidence scores
+        formatted_recommendations = []
+        for rec in recommendations:
+            formatted_rec = analyzer.format_recommendation(
+                rec['text'], 
+                quality_score * (1.2 if rec['priority'] == 'high' else 1.0)
+            )
+            formatted_recommendations.append(formatted_rec)
     
-    return formatted_recommendations
+        return formatted_recommendations
 
     def _get_industry_benchmark(self, industry, metric):
         benchmarks = {
