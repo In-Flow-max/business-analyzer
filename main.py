@@ -292,13 +292,13 @@ class BusinessAnalysisTool:
                 recommendations.append(self._get_category_recommendation(category, score, scores))
         return recommendations
 
-   def _get_category_recommendation(self, category, score, data):
+    def _get_category_recommendation(self, category, score, data):
         analyzer = RecommendationAnalyzer()
         quality_score = analyzer.calculate_data_quality_score(data, category)
     
         recommendations = []
     
-        if category == 'marketing':
+            if category == 'marketing':
             # Market Share Based Recommendations
             market_share = data.get('market_share', 0)
             industry = data.get('industry', 'General')
