@@ -24,29 +24,21 @@ class BusinessAnalysisTool:
             'people': 0.10
         }
     
-    def analyze_marketing(self, data):
+     def analyze_marketing(self, data):
         metrics = {
-            'market_position': {
+            'audience_metrics': {
                 'score': 0,
                 'criteria': {
-                    'market_share': data.get('market_share', 0) / 100 * 10,
-                    'brand_recognition': data.get('brand_recognition', 0) / 100 * 10,
-                    'competitive_advantage': data.get('competitive_advantage', 0) / 10
+                    'total_addressable_audience': self._normalize_audience(data.get('total_addressable_audience', 0)),
+                    'campaign_effectiveness': data.get('campaign_effectiveness', 0) / 10,
+                    'conversion_rate': data.get('conversion_rate', 0) / 100 * 10
                 }
             },
-            'customer_acquisition': {
+            'performance_metrics': {
                 'score': 0,
                 'criteria': {
                     'cac': self._normalize_cac(data.get('customer_acquisition_cost', 0)),
-                    'conversion_rate': data.get('conversion_rate', 0) / 100 * 10,
                     'marketing_roi': self._normalize_roi(data.get('marketing_roi', 0))
-                }
-            },
-            'growth_potential': {
-                'score': 0,
-                'criteria': {
-                    'market_growth': data.get('market_growth', 0) / 100 * 10,
-                    'addressable_market': self._normalize_tam(data.get('total_addressable_market', 0))
                 }
             }
         }
@@ -136,14 +128,14 @@ class BusinessAnalysisTool:
         }
         return self._calculate_category_score(metrics)
 
-    def analyze_financial_health(self, data):
+     def analyze_financial_health(self, data):
         metrics = {
             'profitability': {
                 'score': 0,
                 'criteria': {
-                    'gross_margin': self._normalize_margin(data.get('gross_margin', 0)),
-                    'net_margin': self._normalize_margin(data.get('net_margin', 0)),
-                    'ebitda_margin': self._normalize_margin(data.get('ebitda_margin', 0))
+                    'gross_profit_margin': self._normalize_margin(data.get('gross_profit_margin', 0)),
+                    'net_profit_margin': self._normalize_margin(data.get('net_profit_margin', 0)),
+                    'operating_margin': self._normalize_margin(data.get('operating_margin', 0))
                 }
             },
             'liquidity': {
@@ -151,19 +143,19 @@ class BusinessAnalysisTool:
                 'criteria': {
                     'current_ratio': self._normalize_ratio(data.get('current_ratio', 0)),
                     'quick_ratio': self._normalize_ratio(data.get('quick_ratio', 0)),
-                    'cash_ratio': self._normalize_ratio(data.get('cash_ratio', 0))
+                    'cash_flow_operations': self._normalize_cash_flow(data.get('cash_flow_operations', 0))
                 }
             },
-            'growth': {
+            'efficiency': {
                 'score': 0,
                 'criteria': {
-                    'revenue_growth': data.get('revenue_growth', 0) / 100 * 10,
-                    'profit_growth': data.get('profit_growth', 0) / 100 * 10
+                    'inventory_turnover': self._normalize_turnover(data.get('inventory_turnover', 0)),
+                    'days_sales_outstanding': self._normalize_dso(data.get('days_sales_outstanding', 0)),
+                    'debt_to_equity': self._normalize_leverage(data.get('debt_to_equity', 0))
                 }
             }
         }
         return self._calculate_category_score(metrics)
-
     def analyze_people(self, data):
         metrics = {
             'talent_metrics': {
@@ -240,6 +232,25 @@ class BusinessAnalysisTool:
         if ratio <= 0: return 0
         return min(10, max(0, ratio * 5))
 
+    def _normalize_audience(self, audience):
+        if audience <= 0: return 0
+        return min(10, max(0, (audience / 100000)))  # Scale based on audience size
+
+    def _normalize_cash_flow(self, cash_flow):
+        if cash_flow <= 0: return 0
+        return min(10, max(0, (cash_flow / 100000)))  # Scale based on cash flow amount
+
+    def _normalize_turnover(self, turnover):
+        if turnover <= 0: return 0
+        return min(10, max(0, (turnover / 12) * 10))  # 12 turns per year as benchmark
+
+    def _normalize_dso(self, dso):
+        if dso <= 0: return 0
+        return min(10, max(0, 10 - (dso / 30)))  # Lower DSO is better
+
+    def _normalize_leverage(self, ratio):
+        if ratio <= 0: return 0
+        return min(10, max(0, 10 - (ratio * 2)))  # Lower debt-to-equity is better
     def generate_comprehensive_report(self, data):
         scores = {
             'marketing': self.analyze_marketing(data),
@@ -338,29 +349,28 @@ class BusinessAnalysisTool:
     def _get_industry_benchmark(self, industry, metric):
         benchmarks = {
             "B2B Software": {
-                "market_share": 15,
+                "total_addressable_audience": 100000,
                 "cac": 400,
-                "roas": 2.5,
-                "retention_rate": 85
+                "marketing_roi": 250,
+                "gross_profit_margin": 70,
+                "net_profit_margin": 15,
+                "current_ratio": 2.0,
+                "quick_ratio": 1.5,
+                "inventory_turnover": 12,
+                "days_sales_outstanding": 45
             },
             "B2C E-commerce": {
-                "market_share": 10,
+                "total_addressable_audience": 500000,
                 "cac": 30,
-                "roas": 4.0,
-                "retention_rate": 65
+                "marketing_roi": 400,
+                "gross_profit_margin": 45,
+                "net_profit_margin": 10,
+                "current_ratio": 1.8,
+                "quick_ratio": 1.2,
+                "inventory_turnover": 8,
+                "days_sales_outstanding": 30
             },
-            "Professional Services": {
-                "market_share": 20,
-                "cac": 200,
-                "roas": 3.0,
-                "retention_rate": 80
-            },
-            "Manufacturing": {
-                "market_share": 25,
-                "cac": 600,
-                "roas": 2.0,
-                "retention_rate": 90
-            }
+            # Add other industries with their benchmarks
         }
         return benchmarks.get(industry, {}).get(metric, 0)
 
@@ -499,13 +509,12 @@ def main():
 
         with col1:
             st.subheader("Marketing Metrics")
-            inputs['market_share'] = st.slider("Market Share (%)", 0, 100, 15)
-            inputs['brand_recognition'] = st.slider("Brand Recognition (%)", 0, 100, 60)
-            inputs['competitive_advantage'] = st.slider("Competitive Advantage (1-10)", 1, 10, 7)
+            inputs['brand_recognition'] = st.slider("Total Addressable Audience", 0, 1000000, 10000)  # Changed from brand recognition
+            # Remove market_share and market_growth
+            inputs['campaign_effectiveness'] = st.slider("Campaign Effectiveness (1-10)", 1, 10, 7)  # Replaced competitive advantage
             inputs['customer_acquisition_cost'] = st.number_input("Customer Acquisition Cost ($)", 0, 10000, 500)
             inputs['conversion_rate'] = st.slider("Conversion Rate (%)", 0, 100, 25)
             inputs['marketing_roi'] = st.number_input("Marketing ROI (%)", 0, 1000, 150)
-            inputs['market_growth'] = st.slider("Market Growth (%)", 0, 100, 20)
             inputs['total_addressable_market'] = st.number_input("Total Addressable Market ($)", 0, 1000000000, 500000000)
 
         with col2:
@@ -522,13 +531,14 @@ def main():
         with col3:
             st.subheader("Financial & Operational Metrics")
             inputs['operating_margin'] = st.slider("Operating Margin (%)", -100, 100, 25)
-            inputs['overhead_ratio'] = st.slider("Overhead Ratio (%)", 0, 100, 30)
-            inputs['gross_margin'] = st.slider("Gross Margin (%)", -100, 100, 65)
-            inputs['net_margin'] = st.slider("Net Margin (%)", -100, 100, 15)
+            inputs['gross_profit_margin'] = st.slider("Gross Profit Margin (%)", -100, 100, 65)
+            inputs['net_profit_margin'] = st.slider("Net Profit Margin (%)", -100, 100, 15)
             inputs['current_ratio'] = st.number_input("Current Ratio", 0.0, 10.0, 2.5)
-            inputs['employee_satisfaction'] = st.slider("Employee Satisfaction (%)", 0, 100, 80)
-            inputs['employee_retention'] = st.slider("Employee Retention (%)", 0, 100, 85)
-            inputs['culture_rating'] = st.slider("Culture Rating (1-10)", 1, 10, 8)
+            inputs['quick_ratio'] = st.number_input("Quick Ratio", 0.0, 10.0, 1.8)
+            inputs['debt_to_equity'] = st.number_input("Debt to Equity Ratio", 0.0, 10.0, 1.0)
+            inputs['cash_flow_operations'] = st.number_input("Operating Cash Flow ($)", -1000000, 1000000, 100000)
+            inputs['inventory_turnover'] = st.number_input("Inventory Turnover Ratio", 0.0, 50.0, 12.0)
+            inputs['days_sales_outstanding'] = st.number_input("Days Sales Outstanding", 0, 365, 45)
 
         # Add remaining required fields with default values
         default_fields = {
