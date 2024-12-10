@@ -298,7 +298,7 @@ class BusinessAnalysisTool:
     
         recommendations = []
     
-            if category == 'marketing':
+        if category == 'marketing':
             # Market Share Based Recommendations
             market_share = data.get('market_share', 0)
             industry = data.get('industry', 'General')
