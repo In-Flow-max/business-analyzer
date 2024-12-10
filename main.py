@@ -343,26 +343,26 @@ def _get_industry_benchmark(self, industry, metric):
                 "roas": 2.5,
                 "retention_rate": 85
             },
-        "B2C E-commerce": {
-            "market_share": 10,
-            "cac": 30,
-            "roas": 4.0,
-            "retention_rate": 65
-        },
-        "Professional Services": {
-            "market_share": 20,
-            "cac": 200,
-            "roas": 3.0,
-            "retention_rate": 80
-        },
-        "Manufacturing": {
-            "market_share": 25,
-            "cac": 600,
-            "roas": 2.0,
-            "retention_rate": 90
+            "B2C E-commerce": {
+                "market_share": 10,
+                "cac": 30,
+                "roas": 4.0,
+                "retention_rate": 65
+            },
+            "Professional Services": {
+                "market_share": 20,
+                "cac": 200,
+                "roas": 3.0,
+                "retention_rate": 80
+            },
+            "Manufacturing": {
+                "market_share": 25,
+                "cac": 600,
+                "roas": 2.0,
+                "retention_rate": 90
+            }
         }
-    }
-    return benchmarks.get(industry, {}).get(metric, 0)
+        return benchmarks.get(industry, {}).get(metric, 0)
 
     def _assess_risks(self, scores):
         risks = []
