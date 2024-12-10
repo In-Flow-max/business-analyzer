@@ -292,7 +292,7 @@ class BusinessAnalysisTool:
                 recommendations.append(self._get_category_recommendation(category, score, scores))
         return recommendations
 
-def _get_category_recommendation(self, category, score, data):
+    def _get_category_recommendation(self, category, score, data):
         analyzer = RecommendationAnalyzer()
         quality_score = analyzer.calculate_data_quality_score(data, category)
     
@@ -335,7 +335,7 @@ def _get_category_recommendation(self, category, score, data):
     
         return formatted_recommendations
 
-def _get_industry_benchmark(self, industry, metric):
+    def _get_industry_benchmark(self, industry, metric):
         benchmarks = {
             "B2B Software": {
                 "market_share": 15,
