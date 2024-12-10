@@ -335,7 +335,7 @@ def _get_category_recommendation(self, category, score, data):
     
         return formatted_recommendations
 
-    def _get_industry_benchmark(self, industry, metric):
+def _get_industry_benchmark(self, industry, metric):
         benchmarks = {
             "B2B Software": {
                 "market_share": 15,
