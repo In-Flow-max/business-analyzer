@@ -437,25 +437,25 @@ def display_enhanced_recommendations(report, data):
     tab1, tab2, tab3 = st.tabs(["Key Recommendations", "Data Quality", "Industry Benchmarks"])
     
     with tab1:
-        for category, recommendations in report['recommendations'].items():
-            st.subheader(f"{category.title()} Recommendations")
-            
-            for rec in recommendations:
-                col1, col2 = st.columns([4, 1])
-                with col1:
-                    st.markdown(f"{rec['indicator']} {rec['text']}")
-                with col2:
-                    st.markdown(f"**{rec['confidence_level']}**")
-                    
-                with st.expander("See Details"):
-                    st.write(f"Confidence Score: {rec['confidence_score']:.2f}")
-                    st.progress(rec['confidence_score'])
+        # Changed this section to handle recommendations as a list
+        st.subheader("Recommendations")
+        for rec in report['recommendations']:
+            col1, col2 = st.columns([4, 1])
+            with col1:
+                st.markdown(f"{rec['indicator']} {rec['text']}")
+            with col2:
+                st.markdown(f"**{rec['confidence_level']}**")
+                
+            with st.expander("See Details"):
+                st.write(f"Confidence Score: {rec['confidence_score']:.2f}")
+                st.progress(rec['confidence_score'])
     
     with tab2:
         st.subheader("Data Quality Analysis")
         analyzer = RecommendationAnalyzer()
         
-        for category in report['recommendations'].keys():
+        # Changed this to use scores instead of recommendations
+        for category in report['category_scores'].keys():
             quality_score = analyzer.calculate_data_quality_score(data, category)
             st.metric(
                 f"{category.title()} Data Quality",
