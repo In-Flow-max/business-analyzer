@@ -24,7 +24,7 @@ class BusinessAnalysisTool:
             'people': 0.10
         }
     
-     def analyze_marketing(self, data):
+   def analyze_marketing(self, data):
         metrics = {
             'audience_metrics': {
                 'score': 0,
