@@ -128,7 +128,7 @@ class BusinessAnalysisTool:
         }
         return self._calculate_category_score(metrics)
 
-     def analyze_financial_health(self, data):
+    def analyze_financial_health(self, data):
         metrics = {
             'profitability': {
                 'score': 0,
