@@ -542,17 +542,93 @@ def main():
                 max_value=1000,
                 value=150
             )
-            inputs['total_addressable_market'] = st.number_input(
-                "Total Addressable Market ($)",
+
+        # Sales Metrics
+        st.subheader("Sales Metrics")
+        col3, col4 = st.columns(2)
+        with col3:
+            inputs['revenue_growth'] = st.slider(
+                "Revenue Growth (%)",
+                help="Year-over-year revenue growth rate",
                 min_value=0,
-                max_value=1000000000,
-                value=500000
+                max_value=100,
+                value=30
+            )
+            inputs['recurring_revenue_percentage'] = st.slider(
+                "Recurring Revenue (%)",
+                help="Percentage of revenue that is recurring",
+                min_value=0,
+                max_value=100,
+                value=70
+            )
+            inputs['average_deal_size'] = st.number_input(
+                "Average Deal Size ($)",
+                help="Average revenue per sale",
+                min_value=0,
+                max_value=100000,
+                value=5000
+            )
+        with col4:
+            inputs['pipeline_conversion'] = st.slider(
+                "Pipeline Conversion (%)",
+                help="Percentage of opportunities that convert to sales",
+                min_value=0,
+                max_value=100,
+                value=20
+            )
+            inputs['sales_cycle_length'] = st.number_input(
+                "Sales Cycle Length (days)",
+                help="Average time to close a deal",
+                min_value=0,
+                max_value=365,
+                value=45
+            )
+
+        # Product Delivery Metrics
+        st.subheader("Product & Delivery Metrics")
+        col5, col6 = st.columns(2)
+        with col5:
+            inputs['defect_rate'] = st.slider(
+                "Defect Rate (%)",
+                help="Percentage of products with defects",
+                min_value=0,
+                max_value=100,
+                value=2
+            )
+            inputs['on_time_delivery'] = st.slider(
+                "On-Time Delivery (%)",
+                help="Percentage of deliveries made on time",
+                min_value=0,
+                max_value=100,
+                value=95
+            )
+            inputs['product_satisfaction'] = st.slider(
+                "Product Satisfaction (%)",
+                help="Customer satisfaction with product",
+                min_value=0,
+                max_value=100,
+                value=90
+            )
+        with col6:
+            inputs['sla_compliance'] = st.slider(
+                "SLA Compliance (%)",
+                help="Service Level Agreement compliance rate",
+                min_value=0,
+                max_value=100,
+                value=98
+            )
+            inputs['automation_percentage'] = st.slider(
+                "Automation Level (%)",
+                help="Percentage of processes that are automated",
+                min_value=0,
+                max_value=100,
+                value=60
             )
 
         # Financial Metrics
         st.subheader("Financial Metrics")
-        col3, col4 = st.columns(2)
-        with col3:
+        col7, col8 = st.columns(2)
+        with col7:
             inputs['gross_profit_margin'] = st.slider(
                 "Gross Profit Margin (%)",
                 help="(Revenue - COGS) / Revenue × 100",
@@ -581,7 +657,7 @@ def main():
                 max_value=10.0,
                 value=2.5
             )
-        with col4:
+        with col8:
             inputs['quick_ratio'] = st.number_input(
                 "Quick Ratio",
                 help="(Current Assets - Inventory) / Current Liabilities",
@@ -611,68 +687,94 @@ def main():
                 value=45
             )
 
-        # Operational Metrics
-        st.subheader("Operational Metrics")
-        col5, col6 = st.columns(2)
-        with col5:
-            inputs['product_satisfaction'] = st.slider(
-                "Product Satisfaction (%)",
-                min_value=0,
-                max_value=100,
-                value=90
-            )
-            inputs['on_time_delivery'] = st.slider(
-                "On-Time Delivery (%)",
-                min_value=0,
-                max_value=100,
-                value=95
-            )
-            inputs['automation_percentage'] = st.slider(
-                "Automation Level (%)",
-                min_value=0,
-                max_value=100,
-                value=60
-            )
-        with col6:
-            inputs['defect_rate'] = st.slider(
-                "Defect Rate (%)",
-                min_value=0,
-                max_value=100,
-                value=2
-            )
+        # Operational Efficiency
+        st.subheader("Operational Efficiency")
+        col9, col10 = st.columns(2)
+        with col9:
             inputs['resource_utilization'] = st.slider(
                 "Resource Utilization (%)",
+                help="Percentage of resources being utilized",
                 min_value=0,
                 max_value=100,
                 value=80
             )
+            inputs['process_automation'] = st.slider(
+                "Process Automation (%)",
+                help="Percentage of processes automated",
+                min_value=0,
+                max_value=100,
+                value=70
+            )
             inputs['error_rate'] = st.slider(
                 "Error Rate (%)",
+                help="Percentage of errors in processes",
                 min_value=0,
                 max_value=100,
                 value=3
             )
+        with col10:
+            inputs['cost_per_unit'] = st.number_input(
+                "Cost per Unit ($)",
+                help="Average cost to produce one unit",
+                min_value=0,
+                max_value=1000,
+                value=50
+            )
+            inputs['cycle_time'] = st.number_input(
+                "Cycle Time (days)",
+                help="Time to complete one process cycle",
+                min_value=0,
+                max_value=100,
+                value=15
+            )
 
-        # Add remaining default fields
-        default_fields = {
-            'sla_compliance': 98,
-            'delivery_cost': 200,
-            'cycle_time': 15,
-            'capacity_utilization': 75,
-            'process_automation': 70,
-            'cost_per_unit': 50,
-            'tech_stack_rating': 8,
-            'infrastructure_scalability': 7,
-            'ebitda_margin': 20,
-            'cash_ratio': 0.8,
-            'profit_growth': 25,
-            'skill_coverage': 75,
-            'leadership_experience': 8,
-            'succession_readiness': 7,
-            'vision_rating': 8,
-            'innovation_rating': 7
-        }
-        inputs.update(default_fields)
+        # People & Culture
+        st.subheader("People & Culture")
+        col11, col12 = st.columns(2)
+        with col11:
+            inputs['employee_satisfaction'] = st.slider(
+                "Employee Satisfaction (%)",
+                help="Overall employee satisfaction score",
+                min_value=0,
+                max_value=100,
+                value=80
+            )
+            inputs['employee_retention'] = st.slider(
+                "Employee Retention (%)",
+                help="Employee retention rate",
+                min_value=0,
+                max_value=100,
+                value=85
+            )
+            inputs['skill_coverage'] = st.slider(
+                "Skill Coverage (%)",
+                help="Percentage of required skills covered by team",
+                min_value=0,
+                max_value=100,
+                value=75
+            )
+        with col12:
+            inputs['leadership_experience'] = st.slider(
+                "Leadership Experience (1-10)",
+                help="Rating of leadership team experience",
+                min_value=1,
+                max_value=10,
+                value=8
+            )
+            inputs['culture_rating'] = st.slider(
+                "Culture Rating (1-10)",
+                help="Rating of company culture",
+                min_value=1,
+                max_value=10,
+                value=8
+            )
+            inputs['innovation_rating'] = st.slider(
+                "Innovation Rating (1-10)",
+                help="Rating of company innovation capability",
+                min_value=1,
+                max_value=10,
+                value=7
+            )
 
         # Submit button
         submitted = st.form_submit_button("Generate Analysis")
