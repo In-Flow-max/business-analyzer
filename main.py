@@ -502,74 +502,129 @@ def main():
 
     with tab1:
         st.header("Business Metrics Input")
+        
+        with st.form("business_metrics_form"):
+            st.subheader("Marketing and Sales Metrics")
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.markdown("#### Marketing Metrics")
+                inputs = {}
+                inputs['total_addressable_audience'] = st.number_input(
+                    "Total Addressable Audience",
+                    help="Total number of potential customers in your target market",
+                    min_value=0,
+                    max_value=10000000,
+                    value=10000
+                )
+                inputs['campaign_effectiveness'] = st.slider(
+                    "Campaign Effectiveness (1-10)",
+                    help="Overall effectiveness of your marketing campaigns",
+                    min_value=1,
+                    max_value=10,
+                    value=7
+                )
+                inputs['customer_acquisition_cost'] = st.number_input(
+                    "Customer Acquisition Cost ($)",
+                    help="Average cost to acquire a new customer",
+                    min_value=0,
+                    max_value=10000,
+                    value=500
+                )
+                inputs['conversion_rate'] = st.slider(
+                    "Conversion Rate (%)",
+                    help="Percentage of leads that convert to customers",
+                    min_value=0,
+                    max_value=100,
+                    value=25
+                )
+                inputs['marketing_roi'] = st.number_input(
+                    "Marketing ROI (%)",
+                    help="Return on Marketing Investment",
+                    min_value=0,
+                    max_value=1000,
+                    value=150
+                )
+            
+            with col2:
+                st.markdown("#### Financial Metrics")
+                inputs['gross_profit_margin'] = st.slider(
+                    "Gross Profit Margin (%)",
+                    help="(Revenue - COGS) / Revenue × 100",
+                    min_value=-100,
+                    max_value=100,
+                    value=65
+                )
+                inputs['net_profit_margin'] = st.slider(
+                    "Net Profit Margin (%)",
+                    help="Net Profit / Revenue × 100",
+                    min_value=-100,
+                    max_value=100,
+                    value=15
+                )
+                inputs['current_ratio'] = st.number_input(
+                    "Current Ratio",
+                    help="Current Assets / Current Liabilities",
+                    min_value=0.0,
+                    max_value=10.0,
+                    value=2.5
+                )
+                inputs['quick_ratio'] = st.number_input(
+                    "Quick Ratio",
+                    help="(Current Assets - Inventory) / Current Liabilities",
+                    min_value=0.0,
+                    max_value=10.0,
+                    value=1.8
+                )
+                inputs['debt_to_equity'] = st.number_input(
+                    "Debt to Equity Ratio",
+                    help="Total Debt / Total Equity",
+                    min_value=0.0,
+                    max_value=10.0,
+                    value=1.0
+                )
 
-        col1, col2, col3 = st.columns(3)
+            st.markdown("#### Operational Metrics")
+            col3, col4 = st.columns(2)
+            
+            with col3:
+                inputs['cash_flow_operations'] = st.number_input(
+                    "Operating Cash Flow ($)",
+                    help="Cash generated from core business operations",
+                    min_value=-1000000,
+                    max_value=1000000,
+                    value=100000
+                )
+                inputs['inventory_turnover'] = st.number_input(
+                    "Inventory Turnover Ratio",
+                    help="Cost of Goods Sold / Average Inventory",
+                    min_value=0.0,
+                    max_value=50.0,
+                    value=12.0
+                )
+                inputs['days_sales_outstanding'] = st.number_input(
+                    "Days Sales Outstanding",
+                    help="(Accounts Receivable / Total Credit Sales) × 365",
+                    min_value=0,
+                    max_value=365,
+                    value=45
+                )
 
-        inputs = {}
+            # Add default values
+            inputs.update(default_fields)
 
-        with col1:
-            st.subheader("Marketing Metrics")
-            inputs['brand_recognition'] = st.slider("Total Addressable Audience", 0, 1000000, 10000)  # Changed from brand recognition
-            # Remove market_share and market_growth
-            inputs['campaign_effectiveness'] = st.slider("Campaign Effectiveness (1-10)", 1, 10, 7)  # Replaced competitive advantage
-            inputs['customer_acquisition_cost'] = st.number_input("Customer Acquisition Cost ($)", 0, 10000, 500)
-            inputs['conversion_rate'] = st.slider("Conversion Rate (%)", 0, 100, 25)
-            inputs['marketing_roi'] = st.number_input("Marketing ROI (%)", 0, 1000, 150)
-            inputs['total_addressable_market'] = st.number_input("Total Addressable Market ($)", 0, 1000000000, 500000000)
-
-        with col2:
-            st.subheader("Sales & Product Metrics")
-            inputs['revenue_growth'] = st.slider("Revenue Growth (%)", 0, 100, 30)
-            inputs['recurring_revenue_percentage'] = st.slider("Recurring Revenue (%)", 0, 100, 70)
-            inputs['average_deal_size'] = st.number_input("Average Deal Size ($)", 0, 100000, 5000)
-            inputs['pipeline_conversion'] = st.slider("Pipeline Conversion (%)", 0, 100, 20)
-            inputs['sales_cycle_length'] = st.number_input("Sales Cycle Length (days)", 0, 365, 45)
-            inputs['defect_rate'] = st.slider("Defect Rate (%)", 0, 100, 2)
-            inputs['on_time_delivery'] = st.slider("On-Time Delivery (%)", 0, 100, 95)
-            inputs['automation_percentage'] = st.slider("Automation Level (%)", 0, 100, 60)
-
-        with col3:
-            st.subheader("Financial & Operational Metrics")
-            inputs['operating_margin'] = st.slider("Operating Margin (%)", -100, 100, 25)
-            inputs['gross_profit_margin'] = st.slider("Gross Profit Margin (%)", -100, 100, 65)
-            inputs['net_profit_margin'] = st.slider("Net Profit Margin (%)", -100, 100, 15)
-            inputs['current_ratio'] = st.number_input("Current Ratio", 0.0, 10.0, 2.5)
-            inputs['quick_ratio'] = st.number_input("Quick Ratio", 0.0, 10.0, 1.8)
-            inputs['debt_to_equity'] = st.number_input("Debt to Equity Ratio", 0.0, 10.0, 1.0)
-            inputs['cash_flow_operations'] = st.number_input("Operating Cash Flow ($)", -1000000, 1000000, 100000)
-            inputs['inventory_turnover'] = st.number_input("Inventory Turnover Ratio", 0.0, 50.0, 12.0)
-            inputs['days_sales_outstanding'] = st.number_input("Days Sales Outstanding", 0, 365, 45)
-
-        # Add remaining required fields with default values
-        default_fields = {
-            'product_satisfaction': 90,
-            'sla_compliance': 98,
-            'delivery_cost': 200,
-            'cycle_time': 15,
-            'capacity_utilization': 75,
-            'process_automation': 70,
-            'resource_utilization': 80,
-            'error_rate': 3,
-            'cost_per_unit': 50,
-            'tech_stack_rating': 8,
-            'infrastructure_scalability': 7,
-            'ebitda_margin': 20,
-            'quick_ratio': 1.8,
-            'cash_ratio': 0.8,
-            'profit_growth': 25,
-            'skill_coverage': 75,
-            'leadership_experience': 8,
-            'succession_readiness': 7,
-            'vision_rating': 8,
-            'innovation_rating': 7
-        }
-        inputs.update(default_fields)
+            submitted = st.form_submit_button("Generate Analysis")
+            if submitted:
+                # Generate report
+                report = analyzer.generate_comprehensive_report(inputs)
+                st.session_state.report = report
+                st.session_state.inputs = inputs
 
     with tab2:
-        if st.button("Generate Analysis"):
-            # Generate report
-            report = analyzer.generate_comprehensive_report(inputs)
-
+        if 'report' in st.session_state:
+            report = st.session_state.report
+            inputs = st.session_state.inputs
+            
             # Display overall scores
             col1, col2 = st.columns(2)
 
