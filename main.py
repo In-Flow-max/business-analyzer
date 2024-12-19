@@ -498,151 +498,209 @@ def main():
 
     analyzer = BusinessAnalysisTool()
 
-    tab1, tab2 = st.tabs(["Input Metrics", "Analysis Results"])
-
-    with tab1:
-        st.header("Business Metrics Input")
+    with st.form("business_metrics_form"):
+        st.header("Business Metrics")
         
-        with st.form("business_metrics_form"):
-            st.subheader("Marketing and Sales Metrics")
-            col1, col2 = st.columns(2)
-            
-            with col1:
-                st.markdown("#### Marketing Metrics")
-                inputs = {}
-                inputs['total_addressable_audience'] = st.number_input(
-                    "Total Addressable Audience",
-                    help="Total number of potential customers in your target market",
-                    min_value=0,
-                    max_value=10000000,
-                    value=10000
-                )
-                inputs['campaign_effectiveness'] = st.slider(
-                    "Campaign Effectiveness (1-10)",
-                    help="Overall effectiveness of your marketing campaigns",
-                    min_value=1,
-                    max_value=10,
-                    value=7
-                )
-                inputs['customer_acquisition_cost'] = st.number_input(
-                    "Customer Acquisition Cost ($)",
-                    help="Average cost to acquire a new customer",
-                    min_value=0,
-                    max_value=10000,
-                    value=500
-                )
-                inputs['conversion_rate'] = st.slider(
-                    "Conversion Rate (%)",
-                    help="Percentage of leads that convert to customers",
-                    min_value=0,
-                    max_value=100,
-                    value=25
-                )
-                inputs['marketing_roi'] = st.number_input(
-                    "Marketing ROI (%)",
-                    help="Return on Marketing Investment",
-                    min_value=0,
-                    max_value=1000,
-                    value=150
-                )
-            
-            with col2:
-                st.markdown("#### Financial Metrics")
-                inputs['gross_profit_margin'] = st.slider(
-                    "Gross Profit Margin (%)",
-                    help="(Revenue - COGS) / Revenue × 100",
-                    min_value=-100,
-                    max_value=100,
-                    value=65
-                )
-                inputs['net_profit_margin'] = st.slider(
-                    "Net Profit Margin (%)",
-                    help="Net Profit / Revenue × 100",
-                    min_value=-100,
-                    max_value=100,
-                    value=15
-                )
-                inputs['current_ratio'] = st.number_input(
-                    "Current Ratio",
-                    help="Current Assets / Current Liabilities",
-                    min_value=0.0,
-                    max_value=10.0,
-                    value=2.5
-                )
-                inputs['quick_ratio'] = st.number_input(
-                    "Quick Ratio",
-                    help="(Current Assets - Inventory) / Current Liabilities",
-                    min_value=0.0,
-                    max_value=10.0,
-                    value=1.8
-                )
-                inputs['debt_to_equity'] = st.number_input(
-                    "Debt to Equity Ratio",
-                    help="Total Debt / Total Equity",
-                    min_value=0.0,
-                    max_value=10.0,
-                    value=1.0
-                )
+        # Marketing Metrics
+        st.subheader("Marketing Metrics")
+        col1, col2 = st.columns(2)
+        with col1:
+            inputs = {}
+            inputs['total_addressable_audience'] = st.number_input(
+                "Total Addressable Audience",
+                help="Total number of potential customers in your target market",
+                min_value=0,
+                max_value=10000000,
+                value=10000
+            )
+            inputs['campaign_effectiveness'] = st.slider(
+                "Campaign Effectiveness (1-10)",
+                help="Overall effectiveness of your marketing campaigns",
+                min_value=1,
+                max_value=10,
+                value=7
+            )
+            inputs['customer_acquisition_cost'] = st.number_input(
+                "Customer Acquisition Cost ($)",
+                help="Average cost to acquire a new customer",
+                min_value=0,
+                max_value=10000,
+                value=500
+            )
+        with col2:
+            inputs['conversion_rate'] = st.slider(
+                "Conversion Rate (%)",
+                help="Percentage of leads that convert to customers",
+                min_value=0,
+                max_value=100,
+                value=25
+            )
+            inputs['marketing_roi'] = st.number_input(
+                "Marketing ROI (%)",
+                help="Return on Marketing Investment",
+                min_value=0,
+                max_value=1000,
+                value=150
+            )
+            inputs['total_addressable_market'] = st.number_input(
+                "Total Addressable Market ($)",
+                min_value=0,
+                max_value=1000000000,
+                value=500000
+            )
 
-            st.markdown("#### Operational Metrics")
-            col3, col4 = st.columns(2)
-            
-            with col3:
-                inputs['cash_flow_operations'] = st.number_input(
-                    "Operating Cash Flow ($)",
-                    help="Cash generated from core business operations",
-                    min_value=-1000000,
-                    max_value=1000000,
-                    value=100000
-                )
-                inputs['inventory_turnover'] = st.number_input(
-                    "Inventory Turnover Ratio",
-                    help="Cost of Goods Sold / Average Inventory",
-                    min_value=0.0,
-                    max_value=50.0,
-                    value=12.0
-                )
-                inputs['days_sales_outstanding'] = st.number_input(
-                    "Days Sales Outstanding",
-                    help="(Accounts Receivable / Total Credit Sales) × 365",
-                    min_value=0,
-                    max_value=365,
-                    value=45
-                )
+        # Financial Metrics
+        st.subheader("Financial Metrics")
+        col3, col4 = st.columns(2)
+        with col3:
+            inputs['gross_profit_margin'] = st.slider(
+                "Gross Profit Margin (%)",
+                help="(Revenue - COGS) / Revenue × 100",
+                min_value=-100,
+                max_value=100,
+                value=65
+            )
+            inputs['net_profit_margin'] = st.slider(
+                "Net Profit Margin (%)",
+                help="Net Profit / Revenue × 100",
+                min_value=-100,
+                max_value=100,
+                value=15
+            )
+            inputs['operating_margin'] = st.slider(
+                "Operating Margin (%)",
+                help="Operating Income / Revenue × 100",
+                min_value=-100,
+                max_value=100,
+                value=25
+            )
+            inputs['current_ratio'] = st.number_input(
+                "Current Ratio",
+                help="Current Assets / Current Liabilities",
+                min_value=0.0,
+                max_value=10.0,
+                value=2.5
+            )
+        with col4:
+            inputs['quick_ratio'] = st.number_input(
+                "Quick Ratio",
+                help="(Current Assets - Inventory) / Current Liabilities",
+                min_value=0.0,
+                max_value=10.0,
+                value=1.8
+            )
+            inputs['debt_to_equity'] = st.number_input(
+                "Debt to Equity Ratio",
+                help="Total Debt / Total Equity",
+                min_value=0.0,
+                max_value=10.0,
+                value=1.0
+            )
+            inputs['inventory_turnover'] = st.number_input(
+                "Inventory Turnover Ratio",
+                help="Cost of Goods Sold / Average Inventory",
+                min_value=0.0,
+                max_value=50.0,
+                value=12.0
+            )
+            inputs['days_sales_outstanding'] = st.number_input(
+                "Days Sales Outstanding",
+                help="Average collection period",
+                min_value=0,
+                max_value=365,
+                value=45
+            )
 
-            # Add default values
-            inputs.update(default_fields)
+        # Operational Metrics
+        st.subheader("Operational Metrics")
+        col5, col6 = st.columns(2)
+        with col5:
+            inputs['product_satisfaction'] = st.slider(
+                "Product Satisfaction (%)",
+                min_value=0,
+                max_value=100,
+                value=90
+            )
+            inputs['on_time_delivery'] = st.slider(
+                "On-Time Delivery (%)",
+                min_value=0,
+                max_value=100,
+                value=95
+            )
+            inputs['automation_percentage'] = st.slider(
+                "Automation Level (%)",
+                min_value=0,
+                max_value=100,
+                value=60
+            )
+        with col6:
+            inputs['defect_rate'] = st.slider(
+                "Defect Rate (%)",
+                min_value=0,
+                max_value=100,
+                value=2
+            )
+            inputs['resource_utilization'] = st.slider(
+                "Resource Utilization (%)",
+                min_value=0,
+                max_value=100,
+                value=80
+            )
+            inputs['error_rate'] = st.slider(
+                "Error Rate (%)",
+                min_value=0,
+                max_value=100,
+                value=3
+            )
 
-            submitted = st.form_submit_button("Generate Analysis")
-            if submitted:
-                # Generate report
-                report = analyzer.generate_comprehensive_report(inputs)
-                st.session_state.report = report
-                st.session_state.inputs = inputs
+        # Add remaining default fields
+        default_fields = {
+            'sla_compliance': 98,
+            'delivery_cost': 200,
+            'cycle_time': 15,
+            'capacity_utilization': 75,
+            'process_automation': 70,
+            'cost_per_unit': 50,
+            'tech_stack_rating': 8,
+            'infrastructure_scalability': 7,
+            'ebitda_margin': 20,
+            'cash_ratio': 0.8,
+            'profit_growth': 25,
+            'skill_coverage': 75,
+            'leadership_experience': 8,
+            'succession_readiness': 7,
+            'vision_rating': 8,
+            'innovation_rating': 7
+        }
+        inputs.update(default_fields)
 
-    with tab2:
-        if 'report' in st.session_state:
-            report = st.session_state.report
-            inputs = st.session_state.inputs
-            
-            # Display overall scores
-            col1, col2 = st.columns(2)
+        # Submit button
+        submitted = st.form_submit_button("Generate Analysis")
 
-            with col1:
-                st.subheader("Overall Performance")
-                gauge_chart = create_risk_gauge(report['overall_score'])
-                st.plotly_chart(gauge_chart)
+    # Show analysis if form is submitted
+    if submitted:
+        # Generate report
+        report = analyzer.generate_comprehensive_report(inputs)
 
-                st.metric("Viability Rating", report['viability_rating'])
-                st.metric("Scalability Rating", report['scalability_rating'])
+        # Display overall scores
+        st.header("Analysis Results")
+        col1, col2 = st.columns(2)
 
-            with col2:
-                st.subheader("Category Performance")
-                radar_chart = create_radar_chart(report['category_scores'])
-                st.plotly_chart(radar_chart)
+        with col1:
+            st.subheader("Overall Performance")
+            gauge_chart = create_risk_gauge(report['overall_score'])
+            st.plotly_chart(gauge_chart)
 
-            # Display enhanced recommendations
-            display_enhanced_recommendations(report, inputs)
+            st.metric("Viability Rating", report['viability_rating'])
+            st.metric("Scalability Rating", report['scalability_rating'])
+
+        with col2:
+            st.subheader("Category Performance")
+            radar_chart = create_radar_chart(report['category_scores'])
+            st.plotly_chart(radar_chart)
+
+        # Display enhanced recommendations
+        display_enhanced_recommendations(report, inputs)
 
 if __name__ == "__main__":
     main()
