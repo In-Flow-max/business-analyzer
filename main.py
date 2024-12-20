@@ -440,6 +440,7 @@ def get_missing_key_metrics(data, category):
     
     return [metric for metric in key_metrics.get(category, [])
             if metric not in data or data[metric] is None]
+
 def display_enhanced_recommendations(report, data):
     st.header("Analysis & Recommendations")
     
@@ -448,44 +449,35 @@ def display_enhanced_recommendations(report, data):
     
     with tab1:
         st.subheader("Recommendations")
+        # Simply display each recommendation as text
         for rec in report['recommendations']:
-            with st.expander(f"Recommendation for {rec['category']} - Score: {rec['score']:.1f}/10"):
-                st.markdown(rec['text'])
+            st.warning(rec)  # Using warning to make it stand out
     
     with tab2:
         st.subheader("Data Quality Analysis")
-        analyzer = RecommendationAnalyzer()
-        
-        for category in report['category_scores'].keys():
-            quality_score = analyzer.calculate_data_quality_score(data, category)
+        for category, score in report['category_scores'].items():
             st.metric(
-                f"{category.title()} Data Quality",
-                f"{quality_score*100:.1f}%",
-                delta=None
+                f"{category.title()}",
+                f"{score:.1f}/10"
             )
             
-            with st.expander("How to improve data quality"):
-                st.write("To improve confidence in recommendations:")
+            with st.expander(f"Improve {category.title()} Metrics"):
                 missing_metrics = get_missing_key_metrics(data, category)
                 for metric in missing_metrics:
                     st.write(f"- Add data for: {metric}")
     
     with tab3:
         st.subheader("Industry Benchmarks")
-        industry = data.get('industry', 'General')
-        
         col1, col2 = st.columns(2)
         with col1:
             st.metric(
                 "Industry Avg CAC", 
-                f"${report.get('benchmarks', {}).get('cac', 0)}", 
-                delta=f"{data.get('customer_acquisition_cost', 0) - report.get('benchmarks', {}).get('cac', 0):.0f}"
+                f"${data.get('customer_acquisition_cost', 0)}"
             )
         with col2:
             st.metric(
                 "Industry Avg ROI",
-                f"{report.get('benchmarks', {}).get('roi', 0)}%",
-                delta=f"{data.get('marketing_roi', 0) - report.get('benchmarks', {}).get('roi', 0):.1f}"
+                f"{data.get('marketing_roi', 0)}%"
             )
 def main():
     st.write("Debug: Application Starting")
