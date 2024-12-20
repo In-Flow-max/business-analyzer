@@ -447,24 +447,15 @@ def display_enhanced_recommendations(report, data):
     tab1, tab2, tab3 = st.tabs(["Key Recommendations", "Data Quality", "Industry Benchmarks"])
     
     with tab1:
-        # Changed this section to handle recommendations as a list
         st.subheader("Recommendations")
         for rec in report['recommendations']:
-            col1, col2 = st.columns([4, 1])
-            with col1:
-                st.markdown(f"{rec['indicator']} {rec['text']}")
-            with col2:
-                st.markdown(f"**{rec['confidence_level']}**")
-                
-            with st.expander("See Details"):
-                st.write(f"Confidence Score: {rec['confidence_score']:.2f}")
-                st.progress(rec['confidence_score'])
+            with st.expander(f"Recommendation for {rec['category']} - Score: {rec['score']:.1f}/10"):
+                st.markdown(rec['text'])
     
     with tab2:
         st.subheader("Data Quality Analysis")
         analyzer = RecommendationAnalyzer()
         
-        # Changed this to use scores instead of recommendations
         for category in report['category_scores'].keys():
             quality_score = analyzer.calculate_data_quality_score(data, category)
             st.metric(
@@ -485,13 +476,17 @@ def display_enhanced_recommendations(report, data):
         
         col1, col2 = st.columns(2)
         with col1:
-            st.metric("Industry Avg CAC", 
-                     f"${report.get('benchmarks', {}).get('cac', 0)}", 
-                     delta=f"{data.get('customer_acquisition_cost', 0) - report.get('benchmarks', {}).get('cac', 0):.0f}")
+            st.metric(
+                "Industry Avg CAC", 
+                f"${report.get('benchmarks', {}).get('cac', 0)}", 
+                delta=f"{data.get('customer_acquisition_cost', 0) - report.get('benchmarks', {}).get('cac', 0):.0f}"
+            )
         with col2:
-            st.metric("Industry Avg ROAS",
-                     f"{report.get('benchmarks', {}).get('roas', 0)}x",
-                     delta=f"{data.get('marketing_roi', 0) - report.get('benchmarks', {}).get('roas', 0):.1f}")
+            st.metric(
+                "Industry Avg ROI",
+                f"{report.get('benchmarks', {}).get('roi', 0)}%",
+                delta=f"{data.get('marketing_roi', 0) - report.get('benchmarks', {}).get('roi', 0):.1f}"
+            )
 def main():
     st.write("Debug: Application Starting")
     st.title("Business Viability & Scalability Analysis Tool")
